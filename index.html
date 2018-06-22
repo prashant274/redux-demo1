@@ -1,0 +1,74 @@
+<html>
+
+    <head>
+        <script>
+
+            function reducer(state,action){
+                var newState=state;
+                switch(action.type){
+                    case "INCREMENT":
+                    newState++;
+                    break;
+                    case "DECREMENT":
+                    newState--;
+                }
+                return newState;
+            }
+
+            function createStore(_reducer){
+                var state=0;
+                var lisnteners=[];
+
+                function getState(){
+                    return state;
+                }
+
+                function dispatch(action){
+                    state=_reducer(state,action);
+                    lisnteners.forEach((listener)=>listener());
+                }
+
+                function subscribe(listener){
+                    lisnteners.push(listener);
+                }
+
+                return {
+                    getState,
+                    dispatch,
+                    subscribe
+                }
+            }
+			
+			
+			function showCounter(){
+                console.log("show Counter called",store.getState());
+				document.getElementById('counter').value=store.getState();
+			}
+            
+           var store = createStore(reducer);
+
+           store.subscribe(showCounter);
+
+            function changeValue(passedOperator){
+                switch(passedOperator){
+                    case "+":
+                    store.dispatch({type:"INCREMENT"})
+                    break;
+                     case "-":
+                    store.dispatch({type:"DECREMENT"})
+                    break;
+                }
+            }
+
+        </script>
+    </head>
+
+    <body>
+        <button onclick="changeValue('+')">+</button>
+        <input  id="counter" style="width:50px"/>   
+        <button onclick="changeValue('-')">-</button>
+
+    </body>
+
+
+</html>
